@@ -1,4 +1,5 @@
 const lib = require('lib')({ token: process.env.STDLIB_TOKEN });
+const dialog = require('dialog');
 /**
 * /create_bet
 *
@@ -16,36 +17,62 @@ const lib = require('lib')({ token: process.env.STDLIB_TOKEN });
 * @returns {object}
 */
 module.exports = (user, channel, text = 'Unknown Bet', command = {}, botToken = null, callback) => {
-    callback(null, {
-        // text: `<@${user}> created a bet: ${text}`,
 
-        text: JSON.stringify(command),
-        // attachments: [
-        // You can customize your messages with attachments.
-        // See https://api.slack.com/docs/message-attachments for more info.
-        // ]
-        attachments: [
+    dialog({
+        trigger_id: command.trigger_id,
+        token: command.token,
+        channel: {
+            id: command.channel_id,
+            name: command.channel_name
+        },
+        user: {
+            id: command.user_id,
+            name: command.user_name
+        },
+        callback_id: "create_bet_dialog",
+        actions: [
             {
-                "text": "Choose one option",
-                "fallback": "You are unable to participate",
-                "callback_id": "wopr_game",
-                "color": "#3AA3E3",
-                "attachment_type": "default",
-                "actions": [
+                "name": "channels_list",
+                "selected_options": [
                     {
-                        "name": "choose_option",
-                        "text": "A",
-                        "type": "button",
-                        "value": "1"
-                    },
-                    {
-                        "name": "add_option",
-                        "text": "Add option",
-                        "type": "button",
-                        "value": "1"
+                        "value": "C012AB3CD"
                     }
                 ]
             }
         ]
-    });
+    }, callback);
+    /*
+        callback(null, {
+            // text: `<@${user}> created a bet: ${text}`,
+    
+            text: JSON.stringify(command),
+            // attachments: [
+            // You can customize your messages with attachments.
+            // See https://api.slack.com/docs/message-attachments for more info.
+            // ]
+            attachments: [
+                {
+                    "text": "Choose one option",
+                    "fallback": "You are unable to participate",
+                    "callback_id": "wopr_game",
+                    "color": "#3AA3E3",
+                    "attachment_type": "default",
+                    "actions": [
+                        {
+                            "name": "choose_option",
+                            "text": "A",
+                            "type": "button",
+                            "value": "1"
+                        },
+                        {
+                            "name": "add_option",
+                            "text": "Add option",
+                            "type": "button",
+                            "value": "1"
+                        }
+                    ]
+                }
+            ]
+        });
+        */
 };
