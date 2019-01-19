@@ -48,6 +48,27 @@ module.exports = (context, callback) => {
         console.log("TYPE is " + type);
         if (type == 'dialog_submission') {
             // Do whatever you want here
+
+            let bet_id;
+            lib.utils.storage.get('num_bets', (err, val) => {
+                console.log("val = " + val);
+                bet_id = val ? val : 0;
+                console.log("bet_id = " + bet_id);
+            });
+            lib.utils.storage.set('num_bets', bet_id + 1, (err) => { });
+            let info_array = JSON.parse(submission.bet_options);
+            console.log(bet_id);
+            console.log(info_array);
+            let bet_info = [];
+            for (let i in info_array) {
+                bet_info.push({
+                    option_name: info_array[i],
+                    people: []
+                });
+            }
+            console.log(bet_info);
+            lib.utils.storage.set('bet_info' + String(bet_id), bet_info, (err) => { });
+
             let msgobject = {
                 text: 'this is our test stuff', attachments: [
                     {
@@ -87,26 +108,6 @@ module.exports = (context, callback) => {
                 msgobject,
                 callback
             );
-
-            let bet_id;
-            lib.utils.storage.get('num_bets', (err, val) => {
-                console.log("val = " + val);
-                bet_id = val ? val : 0;
-                console.log("bet_id = " + bet_id);
-            });
-            lib.utils.storage.set('num_bets', bet_id + 1, (err) => { });
-            let info_array = JSON.parse(submission.bet_options);
-            console.log(bet_id);
-            console.log(info_array);
-            let bet_info = [];
-            for (let i in info_array) {
-                bet_info.push({
-                    option_name: info_array[i],
-                    people: []
-                });
-            }
-            console.log(bet_info);
-            lib.utils.storage.set('bet_info' + String(bet_id), bet_info, (err) => { });
         } else {
             // Do whatever you want here
             if (type == 'interactive_message') {
