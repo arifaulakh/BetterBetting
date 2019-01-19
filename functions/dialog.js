@@ -41,7 +41,6 @@ module.exports = (context, callback) => {
     let team = dialog.team;
 
     getBotToken(team.id, (err, botToken) => {
-
         if (err) {
             callback(err);
         }
@@ -51,14 +50,19 @@ module.exports = (context, callback) => {
 
             let bet_id;
             lib.utils.storage.get('num_bets', (err, val) => {
-                console.log("val = " + val);
-                bet_id = val ? val : 0;
-                console.log("bet_id = " + bet_id);
+                if (isNaN(val)) bet_id = 0;
+                else bet_id = parseInt(val);
+                console.log("val = " + val + " typeof = " + typeof (val));
+                console.log("inside get in dialog.js bets_id = " + bet_id);
+                let num = bet_id + 1;
+                lib.utils.storage.set('num_bets', String(num), (err) => {
+                    console.log("ERROR on set num_bets " + " bet_id = " + bet_id + " err is " + err);
+                });
             });
             lib.utils.storage.set('num_bets', bet_id + 1, (err) => {console.log(err); });
             let info_array = JSON.parse(submission.bet_options);
-            console.log(bet_id);
-            console.log(info_array);
+            console.log("on just recieved dialog submission bet_id is " + bet_id);
+            console.log(" and info array is " + info_array);
             let bet_info = {
                 name: submission.bet_name,
                 price: submission.bet_price,
