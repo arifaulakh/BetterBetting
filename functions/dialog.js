@@ -2,7 +2,7 @@ const lib = require('lib')({ token: process.env.STDLIB_TOKEN });
 
 const getBotToken = require('../helpers/get_bot_token.js');
 const message = require('../utils/message.js');
-const actions = require('./actions/__main__.js');
+// const actions = require('./actions/__main__.js');
 // const respond_to_dialog = require('./dialog.js');
 /**
  * Slack Dialog (Interactive Messages) Response Handler
@@ -14,10 +14,10 @@ module.exports = (context, callback) => {
     let params = context.params;
     let dialog;
 
-    if (params.payload.type !== 'dialog_submission') {
-        actions(context, callback);
-        return;
-    }
+    // if (params.payload.type !== 'dialog_submission') {
+    //     actions(context, callback);
+    //     return;
+    // }
 
     if (params.payload) {
         try {
@@ -31,6 +31,8 @@ module.exports = (context, callback) => {
         return callback(null, { error: 'No dialog specified' });
     }
 
+    let type = dialog.type;
+
     // Use dialog.callback_id to distinguish between different dialogs if you need to
 
     let user = dialog.user; // Object with username and id
@@ -43,14 +45,24 @@ module.exports = (context, callback) => {
         if (err) {
             callback(err);
         }
-
-        // Do whatever you want here
-        message(
-            botToken,
-            dialog.channel.id,
-            'hey, you chose: ' + JSON.stringify(context),
-            callback
-        );
+        console.log("TYPE is " + type);
+        if (type == 'dialog_submission') {
+            // Do whatever you want here
+            message(
+                botToken,
+                dialog.channel.id,
+                'DIALOG: ' + JSON.stringify(submission),
+                callback
+            );
+        } else {
+            // Do whatever you want here
+            message(
+                botToken,
+                dialog.channel.id,
+                'NOT DIALOG: ' + JSON.stringify(submission),
+                callback
+            );
+        }
 
     });
 
