@@ -59,9 +59,13 @@ module.exports = (context, callback) => {
                 bet_id = val;
             });
             lib.utils.storage.set('num_bets', bet_id + 1, (err) => { });
-            let bet_info = JSON.unparse(submission.bet_options);
-            for (var option in bet_info) {
-                option.people = [];
+            let info_array = JSON.parse(submission.bet_options);
+            let bet_info = [];
+            for (var option_string in info_array) {
+                bet_info.push({
+                    option_name: option_string,
+                    people: []
+                });
             }
             lib.utils.storage.set('bet_info' + String(bet_id), bet_info, (err) => { });
         } else {

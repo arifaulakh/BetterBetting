@@ -27,16 +27,22 @@ module.exports = (user, channel, text = 'Unknown Bet', command = {}, botToken = 
             title: 'Create a Bet',
             submit_label: 'Submit',
             elements: [
-              {
-                "type": "text",
-                "label": "Bet",
-                "name": "bet_name"
-              },
-              {
-                "type": "text",
-                "label": "Price",
-                "name": "bet_price"
-            }
+                {
+                    "type": "text",
+                    "label": "Bet",
+                    "name": "bet_name"
+                },
+                {
+                    "type": "text",
+                    "label": "Price",
+                    "name": "bet_price"
+                },
+                {
+                    "type": "textarea",
+                    "label": "Options",
+                    "name": "bet_options",
+                    "hint": "Enter options in json format as array."
+                }
             ]
         }, (err, result) => {
             if (err) {
