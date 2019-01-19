@@ -1,5 +1,6 @@
 const lib = require('lib')({ token: process.env.STDLIB_TOKEN });
-const dialog = require('dialog');
+const getBotToken = require('../../helpers/get_bot_token.js');
+const openDialog = require('../../utils/open_dialog.js');
 /**
 * /create_bet
 *
@@ -17,30 +18,59 @@ const dialog = require('dialog');
 * @returns {object}
 */
 module.exports = (user, channel, text = 'Unknown Bet', command = {}, botToken = null, callback) => {
-
-    dialog({
-        trigger_id: command.trigger_id,
-        token: command.token,
-        channel: {
-            id: command.channel_id,
-            name: command.channel_name
-        },
-        user: {
-            id: command.user_id,
-            name: command.user_name
-        },
-        callback_id: "create_bet_dialog",
-        actions: [
-            {
-                "name": "channels_list",
-                "selected_options": [
-                    {
-                        "value": "C012AB3CD"
-                    }
-                ]
+    getBotToken(command.team_id, (err, botToken) => {
+        if (err) {
+            callback(err);
+        }
+        openDialog(botToken, command.trigger_id, {
+            callback_id: 'schedule_dialog',
+            title: 'Request a Ride',
+            submit_label: 'Request',
+            elements: [
+                {
+                    label: 'Choose a building',
+                    type: 'select',
+                    name: 'building',
+                    options: [
+                        {
+                            label: 'WPP',
+                            value: 'wpp'
+                        }
+                    ]
+                }
+            ]
+        }, (err, result) => {
+            if (err) {
+                return callback(err);
             }
-        ]
-    }, callback);
+            return callback(null, {});
+        })
+    });
+    /*
+        dialog({
+            trigger_id: command.trigger_id,
+            token: command.token,
+            channel: {
+                id: command.channel_id,
+                name: command.channel_name
+            },
+            user: {
+                id: command.user_id,
+                name: command.user_name
+            },
+            callback_id: "create_bet_dialog",
+            actions: [
+                {
+                    "name": "channels_list",
+                    "selected_options": [
+                        {
+                            "value": "C012AB3CD"
+                        }
+                    ]
+                }
+            ]
+        }, callback);
+        */
     /*
         callback(null, {
             // text: `<@${user}> created a bet: ${text}`,
