@@ -60,47 +60,40 @@ module.exports = (context, callback) => {
             console.log(bet_id);
             console.log(info_array);
             let bet_info = [];
+            let a = [];
             for (let i in info_array) {
                 bet_info.push({
                     option_name: info_array[i],
                     people: []
                 });
+                a.push({
+                    name: "select_option",
+                    text: info_array[i],
+                    type: "button",
+                    value: i
+                });
             }
             console.log(bet_info);
             lib.utils.storage.set('bet_info' + String(bet_id), bet_info, (err) => { });
-
             let msgobject = {
-                text: 'this is our test stuff', attachments: [
+                text: submission.bet_name,
+                attachments: [
                     {
                         "text": "Choose one option",
                         "fallback": "You are unable to participate",
                         "callback_id": "wopr_game",
                         "color": "#3AA3E3",
                         "attachment_type": "default",
-                        "actions": [
-                            {
-                                "name": "bet_options",
-                                "text": "Add Option",
-                                "type": "button",
-                                "value": `add`
-                            },
-                            {
-                                "name": "bet_options",
-                                "text": "Remove Option",
-                                "type": "button",
-                                "value": `remove`
-                            },
-
-                        ]
+                        "actions": a
                     }
                 ]
             };
-            msgobject.attachments[0].actions.push({
-                "name": "newone",
-                "text": "its new wow",
-                "type": "button",
-                "value": `yeinew`
-            });
+            // msgobject.attachments[0].actions.push({
+            //     "name": "newone",
+            //     "text": "its new wow",
+            //     "type": "button",
+            //     "value": `yeinew`
+            // });
             message(
                 botToken,
                 dialog.channel.id,
