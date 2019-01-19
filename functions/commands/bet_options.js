@@ -16,11 +16,33 @@ const lib = require('lib')({ token: process.env.STDLIB_TOKEN });
 * @returns {object}
 */
 module.exports = (user, channel, text = '', command = {}, botToken = null, callback) => {
+    var txt = text.split("; ");
+    var betName = txt[0];
     callback(null, {
-        text: `<@${user}> has accessed bet options`,
+        text: `<@${user}> has accessed bet options for ${betName}`,
         attachments: [
-            // You can customize your messages with attachments.
-            // See https://api.slack.com/docs/message-attachments for more info.
+            {
+                "text": "Choose one option",
+                "fallback": "You are unable to participate",
+                "callback_id": "wopr_game",
+                "color": "#3AA3E3",
+                "attachment_type": "default",
+                "actions": [
+                    {
+                        "name": "bet_options",
+                        "text": "Add Option",
+                        "type": "button",
+                        "value": `add_${betName}`
+                    },
+                    {
+                        "name": "bet_options",
+                        "text": "Remove Option",
+                        "type": "button",
+                        "value": `remove_${betName}`
+                    },
+                    
+                ]
+            }
         ]
     });
 };
