@@ -48,34 +48,32 @@ module.exports = (context, callback) => {
         console.log("TYPE is " + type);
         if (type == 'dialog_submission') {
             // Do whatever you want here
-            let msgobject = {text: 'this is our test stuff', attachments:[
-                {
-                    "text": "Choose one option",
-                    "fallback": "You are unable to participate",
-                    "callback_id": "wopr_game",
-                    "color": "#3AA3E3",
-                    "attachment_type": "default",
-                    "actions": [
-                        {
-                            "name": "bet_options",
-                            "text": "Add Option",
-                            "type": "button",
-                            "value": `add`
-                        },
-                        {
-                            "name": "bet_options",
-                            "text": "Remove Option",
-                            "type": "button",
-                            "value": `remove`
-                        },
-                        
-                    ]
-                }
-            ]};
-            msgobject.attachments.actions.push({"name": "newone",
-            "text": "new",
-            "type": "button",
-            "value": `new`});
+            let msgobject = {
+                text: 'this is our test stuff', attachments: [
+                    {
+                        "text": "Choose one option",
+                        "fallback": "You are unable to participate",
+                        "callback_id": "wopr_game",
+                        "color": "#3AA3E3",
+                        "attachment_type": "default",
+                        "actions": [
+                            {
+                                "name": "bet_options",
+                                "text": "Add Option",
+                                "type": "button",
+                                "value": `add`
+                            },
+                            {
+                                "name": "bet_options",
+                                "text": "Remove Option",
+                                "type": "button",
+                                "value": `remove`
+                            },
+
+                        ]
+                    }
+                ]
+            };
             message(
                 botToken,
                 dialog.channel.id,
@@ -83,16 +81,21 @@ module.exports = (context, callback) => {
                 msgobject,
                 callback
             );
-            // let bet_id;
-            // lib.utils.storage.get('num_bets', (err, val) => {
-            //     bet_id = val;
-            // });
-            // lib.utils.storage.set('num_bets', bet_id + 1, (err) => { });
-            // let bet_info = JSON.parse(submission.bet_options);
-            // for (var option in bet_info) {
-            //     option.people = [];
-            // }
-            // lib.utils.storage.set('bet_info' + String(bet_id), bet_info, (err) => { });
+
+            let bet_id;
+            lib.utils.storage.get('num_bets', (err, val) => {
+                bet_id = val;
+            });
+            lib.utils.storage.set('num_bets', bet_id + 1, (err) => { });
+            let info_array = JSON.parse(submission.bet_options);
+            let bet_info = [];
+            for (var option_string in info_array) {
+                bet_info.push({
+                    option_name: option_string,
+                    people: []
+                });
+            }
+            lib.utils.storage.set('bet_info' + String(bet_id), bet_info, (err) => { });
         } else {
             // Do whatever you want here
             if (type == 'interactive_message') {
@@ -103,10 +106,11 @@ module.exports = (context, callback) => {
                     'inbutton ' + JSON.stringify(title),
                     callback
                 );
-            } else { message(
+            } else {
+                message(
                     botToken,
                     dialog.channel.id,
-                    'NOT DIALOG: ' +  JSON.stringify(submission),
+                    'NOT DIALOG: ' + JSON.stringify(submission),
                     callback
                 );
             }
