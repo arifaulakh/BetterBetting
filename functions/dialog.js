@@ -42,7 +42,7 @@ module.exports = (context, callback) => {
         message(
             botToken,
             dialog.channel.id,
-            'hey, you chose: ' + JSON.stringify(submission),
+            'hey, you chose: ' + JSON.stringify(context),
             callback
         );
 
