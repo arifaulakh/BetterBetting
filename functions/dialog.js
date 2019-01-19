@@ -48,12 +48,40 @@ module.exports = (context, callback) => {
         console.log("TYPE is " + type);
         if (type == 'dialog_submission') {
             // Do whatever you want here
+            let msgobject = {
+                text: 'this is our test stuff', attachments: [
+                    {
+                        "text": "Choose one option",
+                        "fallback": "You are unable to participate",
+                        "callback_id": "wopr_game",
+                        "color": "#3AA3E3",
+                        "attachment_type": "default",
+                        "actions": [
+                            {
+                                "name": "bet_options",
+                                "text": "Add Option",
+                                "type": "button",
+                                "value": `add`
+                            },
+                            {
+                                "name": "bet_options",
+                                "text": "Remove Option",
+                                "type": "button",
+                                "value": `remove`
+                            },
+
+                        ]
+                    }
+                ]
+            };
             message(
                 botToken,
                 dialog.channel.id,
-                'DIALOG: ' + JSON.stringify(submission),
+                //'DIALOG: ' + JSON.stringify(submission),
+                msgobject,
                 callback
             );
+
             let bet_id;
             lib.utils.storage.get('num_bets', (err, val) => {
                 bet_id = val;
@@ -70,12 +98,22 @@ module.exports = (context, callback) => {
             lib.utils.storage.set('bet_info' + String(bet_id), bet_info, (err) => { });
         } else {
             // Do whatever you want here
-            message(
-                botToken,
-                dialog.channel.id,
-                'NOT DIALOG: ' + JSON.stringify(submission),
-                callback
-            );
+            if (type == 'interactive_message') {
+                var title = dialog.actions[0].name;
+                message(
+                    botToken,
+                    dialog.channel.id,
+                    'inbutton ' + JSON.stringify(title),
+                    callback
+                );
+            } else {
+                message(
+                    botToken,
+                    dialog.channel.id,
+                    'NOT DIALOG: ' + JSON.stringify(submission),
+                    callback
+                );
+            }
         }
 
     });
