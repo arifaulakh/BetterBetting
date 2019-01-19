@@ -74,7 +74,7 @@ module.exports = (context, callback) => {
                     }
                 ]
             };
-            msgobject.attachments.actions.push({
+            msgobject.attachments[0].actions.push({
                 "name": "newone",
                 "text": "its new wow",
                 "type": "button",
