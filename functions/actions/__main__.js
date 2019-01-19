@@ -3,7 +3,7 @@ const lib = require('lib')({ token: process.env.STDLIB_TOKEN });
 const getBotToken = require('../../helpers/get_bot_token.js');
 const update = require('../../utils/update_message.js');
 
-const respond_to_dialog = require('./dialog.js');
+// const respond_to_dialog = require('../dialog.js');
 
 /**
  * Slack Actions (Interactive Messages) Response Handler
@@ -25,10 +25,10 @@ const respond_to_dialog = require('./dialog.js');
  */
 module.exports = (context, callback) => {
 
-  if (context.params.payload.type === "dialog_submission") {
-    respond_to_dialog(context, callback);
-    return;
-  }
+  // if (context.params.payload.type == "dialog_submission") {
+  //   respond_to_dialog(context, callback);
+  //   return;
+  // }
 
   let params = context.params;
   let action;

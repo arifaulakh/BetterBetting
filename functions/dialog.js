@@ -1,8 +1,9 @@
 const lib = require('lib')({ token: process.env.STDLIB_TOKEN });
 
-const getBotToken = require('../../helpers/get_bot_token.js');
-const message = require('../../utils/message.js');
-
+const getBotToken = require('../helpers/get_bot_token.js');
+const message = require('../utils/message.js');
+const actions = require('./actions/__main__.js');
+// const respond_to_dialog = require('./dialog.js');
 /**
  * Slack Dialog (Interactive Messages) Response Handler
  * @bg empty
@@ -12,6 +13,11 @@ module.exports = (context, callback) => {
 
     let params = context.params;
     let dialog;
+
+    if (params.payload.type !== 'dialog_submission') {
+        actions(context, callback);
+        return;
+    }
 
     if (params.payload) {
         try {
