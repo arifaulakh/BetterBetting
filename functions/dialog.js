@@ -103,7 +103,7 @@ module.exports = (context, callback) => {
             );
         } else {
             // Do whatever you want here
-            if (type == 'interactive_message') {
+            if (type === 'interactive_message') {
                 var title = dialog.actions[0].name;
                 message(
                     botToken,
@@ -111,6 +111,21 @@ module.exports = (context, callback) => {
                     'inbutton ' + JSON.stringify(title),
                     callback
                 );
+                if (title==="select_option"){
+                  let flag = false;
+                  let val = dialog.actions[0].value;
+                  let bet_id = val.bet_id;
+                  let option_id = val.option_index;
+                  let bet_info;
+                  lib.utils.storage.get('bet_info' + String(bet_id),(err,val) => {
+                    bet_info = val;
+                  });
+                  for (let i in bet_info.options[option_id].people{
+                    if (bet_info.options[option_id].people[i]===user.id)flag = true;
+                  }
+                  if (!flag){
+                    bet_info.options[option_d].people.push(user.id);
+                  }
             } else {
                 message(
                     botToken,
