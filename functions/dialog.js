@@ -54,6 +54,16 @@ module.exports = (context, callback) => {
                 'DIALOG: ' + JSON.stringify(submission),
                 callback
             );
+            let bet_id;
+            lib.utils.storage.get('num_bets', (err, val) => {
+                bet_id = val;
+            });
+            lib.utils.storage.set('num_bets', bet_id + 1, (err) => { });
+            let bet_info = JSON.unparse(submission.bet_options);
+            for (var option in bet_info) {
+                option.people = [];
+            }
+            lib.utils.storage.set('bet_info' + String(bet_id), bet_info, (err) => { });
         } else {
             // Do whatever you want here
             if (type == 'interactive_message') {
