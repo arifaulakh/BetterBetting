@@ -59,10 +59,14 @@ module.exports = (context, callback) => {
             let info_array = JSON.parse(submission.bet_options);
             console.log(bet_id);
             console.log(info_array);
-            let bet_info = [];
+            let bet_info = {
+                name: submission.bet_name,
+                price: submission.bet_price,
+                options: []
+            };
             let a = [];
             for (let i in info_array) {
-                bet_info.push({
+                bet_info.options.push({
                     option_name: info_array[i],
                     people: []
                 });
@@ -70,7 +74,10 @@ module.exports = (context, callback) => {
                     name: "select_option",
                     text: info_array[i],
                     type: "button",
-                    value: i
+                    value: {
+                        "bet_id": bet_id,
+                        "option_index": i
+                    }
                 });
             }
             console.log(bet_info);
