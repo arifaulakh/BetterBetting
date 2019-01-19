@@ -74,6 +74,12 @@ module.exports = (context, callback) => {
                     }
                 ]
             };
+            msgobject.attachments.actions.push({
+                "name": "newone",
+                "text": "its new wow",
+                "type": "button",
+                "value": `yeinew`
+            });
             message(
                 botToken,
                 dialog.channel.id,
