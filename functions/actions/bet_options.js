@@ -17,9 +17,9 @@ const lib = require('lib')({token: process.env.STDLIB_TOKEN});
 * @returns {object}
 */
 module.exports = (user, channel, action = {}, botToken = null, callback) => {
-
+  var act = action;
   callback(null, {
-    text: `${action} \n that was your action`,
+    text: `${action.actions[0].value} \n that was your action`,
     attachments: [{
       text: 'Try hitting this endpoint again by clicking the button!',
       fallback: 'Can\'t display attachment',
