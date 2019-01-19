@@ -55,7 +55,7 @@ module.exports = (context, callback) => {
                 bet_id = val ? val : 0;
                 console.log("bet_id = " + bet_id);
             });
-            lib.utils.storage.set('num_bets', bet_id + 1, (err) => { });
+            lib.utils.storage.set('num_bets', bet_id + 1, (err) => {console.log(err); });
             let info_array = JSON.parse(submission.bet_options);
             console.log(bet_id);
             console.log(info_array);
