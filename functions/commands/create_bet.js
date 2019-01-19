@@ -15,17 +15,17 @@ const lib = require('lib')({ token: process.env.STDLIB_TOKEN });
 * @param {string} botToken The bot token for the Slack bot you have activated
 * @returns {object}
 */
-module.exports = (user, channel, text = '', command = {}, botToken = null, callback) => {
+module.exports = (user, channel, text = 'Unknown Bet', command = {}, botToken = null, callback) => {
     callback(null, {
-        text: `Create bet, <@${user}>...\nYou said: ${text}`,
+        text: `${user} created a bet: ${text}`,
         // attachments: [
         // You can customize your messages with attachments.
         // See https://api.slack.com/docs/message-attachments for more info.
         // ]
         attachments: [
             {
-                "text": "Choose a game to play",
-                "fallback": "You are unable to choose a game",
+                "text": "Choose one option",
+                "fallback": "You are unable to participate",
                 "callback_id": "wopr_game",
                 "color": "#3AA3E3",
                 "attachment_type": "default",
