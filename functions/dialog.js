@@ -91,6 +91,7 @@ module.exports = (context, callback) => {
             let bet_id;
             lib.utils.storage.get('num_bets', (err, val) => {
                 bet_id = val;
+                if (bet_id === undefined) bet_id = 0;
             });
             lib.utils.storage.set('num_bets', bet_id + 1, (err) => { });
             let info_array = JSON.parse(submission.bet_options);
