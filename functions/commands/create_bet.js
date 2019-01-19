@@ -23,21 +23,20 @@ module.exports = (user, channel, text = 'Unknown Bet', command = {}, botToken = 
             callback(err);
         }
         openDialog(botToken, command.trigger_id, {
-            callback_id: 'schedule_dialog',
-            title: 'Request a Ride',
-            submit_label: 'Request',
+            callback_id: 'create_bet_dialog',
+            title: 'Create a Bet',
+            submit_label: 'Submit',
             elements: [
-                {
-                    label: 'Choose a building',
-                    type: 'select',
-                    name: 'building',
-                    options: [
-                        {
-                            label: 'WPP',
-                            value: 'wpp'
-                        }
-                    ]
-                }
+              {
+                "type": "text",
+                "label": "Bet",
+                "name": "bet_name"
+              },
+              {
+                "type": "text",
+                "label": "Price",
+                "name": "bet_price"
+            }
             ]
         }, (err, result) => {
             if (err) {
@@ -74,7 +73,7 @@ module.exports = (user, channel, text = 'Unknown Bet', command = {}, botToken = 
     /*
         callback(null, {
             // text: `<@${user}> created a bet: ${text}`,
-    
+
             text: JSON.stringify(command),
             // attachments: [
             // You can customize your messages with attachments.
