@@ -88,13 +88,16 @@ module.exports = (context, callback) => {
             });
             lib.utils.storage.set('num_bets', bet_id + 1, (err) => { });
             let info_array = JSON.parse(submission.bet_options);
+            console.log(bet_id);
+            console.log(info_array);
             let bet_info = [];
-            for (var option_string in info_array) {
+            for (var i in info_array) {
                 bet_info.push({
-                    option_name: option_string,
+                    option_name: info_array[i],
                     people: []
                 });
             }
+            console.log(bet_info);
             lib.utils.storage.set('bet_info' + String(bet_id), bet_info, (err) => { });
         } else {
             // Do whatever you want here
