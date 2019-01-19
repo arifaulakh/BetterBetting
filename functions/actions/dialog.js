@@ -1,7 +1,7 @@
 const lib = require('lib')({ token: process.env.STDLIB_TOKEN });
 
-const getBotToken = require('../helpers/get_bot_token.js');
-const message = require('../utils/message.js');
+const getBotToken = require('../../helpers/get_bot_token.js');
+const message = require('../../utils/message.js');
 
 /**
  * Slack Dialog (Interactive Messages) Response Handler

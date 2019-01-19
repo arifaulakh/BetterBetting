@@ -1,7 +1,9 @@
-const lib = require('lib')({token: process.env.STDLIB_TOKEN});
+const lib = require('lib')({ token: process.env.STDLIB_TOKEN });
 
 const getBotToken = require('../../helpers/get_bot_token.js');
 const update = require('../../utils/update_message.js');
+
+const respond_to_dialog = require('./dialog.js');
 
 /**
  * Slack Actions (Interactive Messages) Response Handler
@@ -22,6 +24,11 @@ const update = require('../../utils/update_message.js');
  * @returns {object}
  */
 module.exports = (context, callback) => {
+
+  if (context.params.payload.type === "dialog_submission") {
+    respond_to_dialog(context, callback);
+    return;
+  }
 
   let params = context.params;
   let action;
@@ -55,7 +62,7 @@ module.exports = (context, callback) => {
   }
 
   if (!action.actions || !action.actions.length) {
-    return callback(null, {error: 'No actions specified'});
+    return callback(null, { error: 'No actions specified' });
   }
 
   let name = action.actions[0].name;
