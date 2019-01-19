@@ -56,12 +56,21 @@ module.exports = (context, callback) => {
             );
         } else {
             // Do whatever you want here
-            message(
-                botToken,
-                dialog.channel.id,
-                'NOT DIALOG: ' + JSON.stringify(submission),
-                callback
-            );
+            if (type == 'interactive_message') {
+                var title = dialog.actions[0].name;
+                message(
+                    botToken,
+                    dialog.channel.id,
+                    'inbutton ' + JSON.stringify(title),
+                    callback
+                );
+            } else { message(
+                    botToken,
+                    dialog.channel.id,
+                    'NOT DIALOG: ' +  JSON.stringify(submission),
+                    callback
+                );
+            }
         }
 
     });

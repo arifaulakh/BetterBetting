@@ -17,9 +17,21 @@ const lib = require('lib')({token: process.env.STDLIB_TOKEN});
 * @returns {object}
 */
 module.exports = (user, channel, action = {}, botToken = null, callback) => {
-  var act = action;
+  // const lib = require('lib');
+  // const storage = lib.utils.storage['@0.1.6'];
+  // let result = await storage.set({
+  //   value: null // (required)
+  // });
+  
+  // let result = await storage.get();
+  var x = "";
+  lib.utils.storage.set('key', 'value');
+  lib.utils.storage.get('key', (err, value) => {
+    x = value;
+  });
+
   callback(null, {
-    text: `${action.actions[0].value} \n that was your action`,
+    text: `${action.actions[0].value} \n that was your action \n ${JSON.stringify(x)}`,
     attachments: [{
       text: 'Try hitting this endpoint again by clicking the button!',
       fallback: 'Can\'t display attachment',
