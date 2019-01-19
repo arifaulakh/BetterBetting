@@ -120,6 +120,7 @@ module.exports = (context, callback) => {
                 );
                 if (title==="select_option"){
                   let flag = false;
+                  let voted = false;
                   let val = dialog.actions[0].value;
                   let bet_id = val.bet_id;
                   let option_id = val.option_index;
@@ -127,11 +128,22 @@ module.exports = (context, callback) => {
                   lib.utils.storage.get('bet_info' + String(bet_id),(err,val) => {
                     bet_info = val;
                   });
-                  for (let i in bet_info.options[option_id].people{
-                    if (bet_info.options[option_id].people[i]===user.id)flag = true;
+                  for (let i in bet_info.options){
+                    let option = bet_info.options[i];
+                    for (let j in option.people){
+                      if (option.people[j]==user.id){
+                        voted = true;
+                        break;
+                      }
+                    }
                   }
-                  if (!flag){
-                    bet_info.options[option_d].people.push(user.id);
+                  if (!voted){
+                    for (let i in bet_info.options[option_id].people{
+                      if (bet_info.options[option_id].people[i]===user.id)flag = true;
+                    }
+                    if (!flag){
+                      bet_info.options[option_d].people.push(user.id);
+                    }
                   }
             } else {
                 message(
