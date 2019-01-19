@@ -16,6 +16,7 @@ const lib = require('lib')({ token: process.env.STDLIB_TOKEN });
 * @returns {object}
 */
 module.exports = (user, channel, text = 'Unknown Bet', command = {}, botToken = null, callback) => {
+    console.log(command);
     callback(null, {
         text: `<@${user}> created a bet: ${text}`,
         // attachments: [
@@ -43,13 +44,6 @@ module.exports = (user, channel, text = 'Unknown Bet', command = {}, botToken = 
                         "value": "1"
                     }
                 ]
-            },
-            {
-                "label": "Email Address",
-                "name": "email",
-                "type": "text",
-                "subtype": "email",
-                "placeholder": "you@example.com"
             }
         ]
     });
