@@ -59,6 +59,7 @@ module.exports = (context, callback) => {
                     console.log("ERROR on set num_bets " + " bet_id = " + bet_id + " err is " + err);
                 });
             });
+            lib.utils.storage.set('num_bets', bet_id + 1, (err) => {console.log(err); });
             let info_array = JSON.parse(submission.bet_options);
             console.log("on just recieved dialog submission bet_id is " + bet_id);
             console.log(" and info array is " + info_array);
