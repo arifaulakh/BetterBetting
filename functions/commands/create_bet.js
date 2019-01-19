@@ -17,7 +17,7 @@ const lib = require('lib')({ token: process.env.STDLIB_TOKEN });
 */
 module.exports = (user, channel, text = 'Unknown Bet', command = {}, botToken = null, callback) => {
     callback(null, {
-        text: `<@${user} created a bet: ${text}`,
+        text: `<@${user}> created a bet: ${text}`,
         // attachments: [
         // You can customize your messages with attachments.
         // See https://api.slack.com/docs/message-attachments for more info.
