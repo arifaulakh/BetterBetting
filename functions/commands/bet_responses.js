@@ -23,11 +23,11 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
     let bet_info = b[bet_id];
     for (let i in bet_info.options) {
       let option = bet_info.options[i];
-      t += (option.option_name + "**");
+      t += (option.option_name + " ");
       for (let j in option.people) {
-        t += (option.people[j].name + "**");
+        t += (option.people[j].name + " ");
       }
-      t += "  ";
+      t += "\n\n";
     }
     callback(null, {
       text: `These are the options and the people who voted for them ${t}`,
