@@ -189,13 +189,11 @@ module.exports = (context, callback) => {
                     let bet_id = val.bet_id;
                     let option_id = val.option_id;
                     let winners = [], losers = [];
-                    let winner_names = [];
                     for (let i in b[bet_id].options) {
                         for (let j in b[bet_id].options[i].people) {
                             let u = b[bet_id].options[i].people[j];
                             if (i === option_id) {
                                 winners.push(u.id);
-                                winner_names.push(u.name);
                             } else {
                                 losers.push(u.id);
                             }
@@ -209,9 +207,8 @@ module.exports = (context, callback) => {
                             return web.chat.postMessage({ channel: winner, text: 'Congratulations, you won ' + String(winner_earnings) + '!' });
                         });
                         let t = "You owe $" + String(loser_amount) + " each to ";
-                        for (let k in winner_names) {
-                            t += "@";
-                            t += winner_names[k];
+                        for (let k in winners) {
+                            t += `<@${winners[k]}>`;
                             t += " ";
                         }
                         let messages2 = losers.map(loser => {
