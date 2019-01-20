@@ -85,22 +85,58 @@ module.exports = (context, callback) => {
                                 "option_index": i
                             })
                         });
+                        // a.push({
+                        //     "text": info_array[i],
+                        //     "value": JSON.stringify({
+                        //         "bet_id": num_bets,
+                        //         "option_index": i
+                        //     })
+                        // });
                     }
+                    let x = [];
+                    for (let i = 0; i < a.length;) {
+                        let c = [];
+                        let j = i;
+                        console.log("c:");
+                        while (j < a.length && j < i + 5) {
+                            c.push(a[j])
+                            console.log(a[j]);
+                            ++j;
+                        }
+                        x.push({
+                            "fallback": "You are unable to participate",
+                            "callback_id": "wopr_game",
+                            "color": "#3AA3E3",
+                            "attachment_type": "default",
+                            "actions": c
+                        })
+                        i = j;
+                    }
+
                     message(
                         botToken,
                         dialog.channel.id,
                         {
                             text: submission.bet_name,
-                            attachments: [
-                                {
-                                    "text": "Choose one option",
-                                    "fallback": "You are unable to participate",
-                                    "callback_id": "wopr_game",
-                                    "color": "#3AA3E3",
-                                    "attachment_type": "default",
-                                    "actions": a
-                                }
-                            ]
+                            attachments: x
+                            // attachments: [
+                            //     {
+                            //         "text": "Choose one option",
+                            //         "fallback": "You are unable to participate",
+                            //         "callback_id": "wopr_game",
+                            //         "color": "#3AA3E3",
+                            //         "attachment_type": "default",
+                            //         "actions": x
+                            // "actions": [
+                            //     {
+                            //         name: "select_option",
+                            //         text: "Place your bet",
+                            //         type: "select",
+                            //         options: a
+                            //     }
+                            // ]
+                            // }
+                            // ]
                         },
                         callback
                     );
@@ -169,22 +205,42 @@ module.exports = (context, callback) => {
                             })
                         });
                     }
-                    console.log("A is ", a);
+                    // console.log("A is ", a);
+                    let x = [];
+                    for (let i = 0; i < a.length;) {
+                        let c = [];
+                        let j = i;
+                        console.log("c:");
+                        while (j < a.length && j < i + 5) {
+                            c.push(a[j])
+                            console.log(a[j]);
+                            ++j;
+                        }
+                        x.push({
+                            "fallback": "You are unable to participate",
+                            "callback_id": "wopr_game",
+                            "color": "#3AA3E3",
+                            "attachment_type": "default",
+                            "actions": c
+                        })
+                        i = j;
+                    }
                     message(
                         botToken,
                         dialog.channel.id,
                         {
                             text: "Choose correct option",
-                            attachments: [
-                                {
-                                    "text": "Choose one",
-                                    "fallback": "You are unable to participate",
-                                    "callback_id": "wopr_game",
-                                    "color": "#3AA3E3",
-                                    "attachment_type": "default",
-                                    "actions": a
-                                }
-                            ]
+                            attachments: x
+                            // attachments: [
+                            //     {
+                            //         "text": "Choose one",
+                            //         "fallback": "You are unable to participate",
+                            //         "callback_id": "wopr_game",
+                            //         "color": "#3AA3E3",
+                            //         "attachment_type": "default",
+                            //         "actions": a
+                            //     }
+                            // ]
                         },
                         callback
                     );

@@ -31,18 +31,28 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
       }
     }
     console.log(a);
+    let x = [];
+    for (let i = 0; i < a.length;) {
+      let c = [];
+      let j = i;
+      console.log("c:");
+      while (j < a.length && j < i + 5) {
+        c.push(a[j])
+        console.log(a[j]);
+        ++j;
+      }
+      x.push({
+        "fallback": "You are unable to participate",
+        "callback_id": "wopr_game",
+        "color": "#3AA3E3",
+        "attachment_type": "default",
+        "actions": c
+      })
+      i = j;
+    }
     callback(null, {
       text: 'Which active bet from your channel do you want to poll from?',
-      attachments: [
-        {
-          'text': 'Choose one',
-          "fallback": "You are unable to participate",
-          "callback_id": "wopr_game",
-          "attachment_type": "default",
-          "color": "#3AA3E3",
-          'actions': a
-        }
-      ]
+      attachments: x
     })
   });
 };
