@@ -185,20 +185,26 @@ module.exports = (context, callback) => {
                         for (let j in b[bet_id].options[i].people) {
                             let u = b[bet_id].options[i].people[j];
                             if (i === option_id) {
-                                winners.push(u);
+                                winners.push(u.id);
                             } else {
-                                losers.push(u);
+                                losers.push(u.id);
                             }
                         }
                     }
-                    console.log("winners:");
-                    for (let i in winners) console.log(winners[i]);
-                    console.log("losers:");
-                    for (let i in losers) console.log(losers[i]);
-                    b[bet_id].dead = true;
-                    lib.utils.kv.set({ key: 'bet_info', value: b }, (err) => {
-
+                    let messages = winners.map(winner => {
+                      return web.chat.postMessage({ channel: winner, text: 'Hello there' });
                     });
+
+                    Promise.all(messages).then(results => {
+                      console.log("winners:");
+                      for (let i in winners) console.log(winners[i]);
+                      console.log("losers:");
+                      for (let i in losers) console.log(losers[i]);
+                      b[bet_id].dead = true;
+                      lib.utils.kv.set({ key: 'bet_info', value: b }, (err) => {
+
+                      });
+                    })
                 });
             }
         }
