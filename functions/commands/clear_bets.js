@@ -21,6 +21,6 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
     if (err) {
       console.log("clear bets err:", err);
     }
-    callback(err, 'All bets are cleared');
+    callback(err, 'cleared');
   })
 };
