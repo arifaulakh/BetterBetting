@@ -17,12 +17,14 @@ const lib = require('lib')({ token: process.env.STDLIB_TOKEN });
 */
 module.exports = (user, channel, text = '', command = {}, botToken = null, callback) => {
     lib.utils.kv.get({ key: 'bet_info' }, (err, b) => {
-        console.log("In answer.js b:", b, " type = ", typeof (b));
+        console.log("In answer.js b:", b, " type = ", typeof (b), " user ", user);
         if (!b) b = [];
         let a = [];
         function f(id) {
             console.log("f " + id);
             if (id >= b.length) {
+                console.log("After answer a is:");
+                console.log(a);
                 callback(null, {
                     text: `List of events`,
                     attachments: [
@@ -37,14 +39,14 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
                     ]
                 });
             } else {
-                let t = b[id].name;
-                if (t === undefined) t = "random thing";
-                a.push({
-                    name: "bet_to_answer",
-                    text: t,
-                    type: "button",
-                    value: id
-                });
+                if (!b[id].dead && b[id].owner.id === user) {
+                    a.push({
+                        name: "bet_to_answer",
+                        text: b[id].name,
+                        type: "button",
+                        value: id
+                    });
+                }
                 f(id + 1);
             }
         }

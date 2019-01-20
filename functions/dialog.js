@@ -47,7 +47,8 @@ module.exports = (context, callback) => {
             let bet_info = {
                 name: submission.bet_name,
                 price: submission.bet_price,
-                owner: null,
+                owner: user,
+                dead: false,
                 options: []
             };
             for (let i in info_array) {
@@ -132,6 +133,72 @@ module.exports = (context, callback) => {
                             }
                         })
                     }
+                });
+            } else if (title === "bet_to_answer") {
+                let bet_id = dialog.actions[0].value;
+                console.log("bet_to_answer bet_id = ", bet_id);
+                lib.utils.kv.get({ key: 'bet_info' }, (err, b) => {
+                    let a = [];
+                    console.log("within get b");
+                    console.log(b);
+                    console.log(b[bet_id].options);
+                    for (let option_id in b[bet_id].options) {
+                        console.log("option_id = ", option_id, " and b[bet_id].options[option_id]=", b[bet_id].options[option_id]);
+                        a.push({
+                            name: 'option_to_answer',
+                            text: b[bet_id].options[option_id].option_name,
+                            type: "button",
+                            value: JSON.stringify({
+                                "bet_id": bet_id,
+                                "option_id": option_id
+                            })
+                        });
+                    }
+                    message(
+                        botToken,
+                        dialog.channel.id,
+                        {
+                            text: "Choose correct option",
+                            attachments: [
+                                {
+                                    "text": "Choose one",
+                                    "fallback": "You are unable to participate",
+                                    "callback_id": "wopr_game",
+                                    "color": "#3AA3E3",
+                                    "attachment_type": "default",
+                                    "actions": a
+                                }
+                            ]
+                        },
+                        callback
+                    );
+                });
+            } else if (title === "option_to_answer") {
+                console.log("IN OPTION TO ANSWER");
+                lib.utils.kv.get({ key: 'bet_info' }, (err, b) => {
+                    let val = JSON.parse(dialog.actions[0].value);
+                    console.log("val = ", val);
+                    let bet_id = val.bet_id;
+                    let option_id = val.option_id;
+                    let winners = [], losers = [];
+                    for (let i in b[bet_id].options) {
+                        for (let j in b[bet_id].options[i].people) {
+                            let u = b[bet_id].options[i].people[j];
+                            if (i === option_id) {
+                                winners.push(u);
+                            } else {
+                                losers.push(u);
+                            }
+                        }
+                    }
+                    console.log("winners:");
+                    for (let i in winners) console.log(winners[i]);
+                    console.log("losers:");
+                    for (let i in losers) console.log(losers[i]);
+                    b[bet_id].dead = true;
+                    lib.utils.kv.set({ key: 'bet_info', value: b }, (err) => {
+
+                    });
                 });
             }
         }
