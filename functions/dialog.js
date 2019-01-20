@@ -192,14 +192,14 @@ module.exports = (context, callback) => {
                             }
                         }
                     }
-                    const { WebClient } = require('@slack/client');
-                    const token = process.env.SLACK_VERIFICATION_TOKEN;
+                    // const { WebClient } = require('@slack/client');
+                    // const token = process.env.SLACK_VERIFICATION_TOKEN;
 
-                    const web = new WebClient(token);
+                    // const web = new WebClient(token);
 
-                    let messages = winners.map(winner => {
-                        return web.chat.postMessage({ channel: winner, text: 'Hello there' });
-                    });
+                    // let messages = winners.map(winner => {
+                    // return web.chat.postMessage({ channel: winner, text: 'Hello there' });
+                    // });
 
                     Promise.all(messages).then(results => {
 
@@ -215,6 +215,7 @@ module.exports = (context, callback) => {
                 });
             } else {
                 console.log("UNCAUGHT!!!!!! title is " + title);
+                callback(null, "failure");
             }
         }
     });
