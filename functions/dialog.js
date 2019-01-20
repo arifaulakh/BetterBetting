@@ -53,6 +53,7 @@ module.exports = (context, callback) => {
                 name: submission.bet_name,
                 price: submission.bet_price,
                 owner: user,
+                channel: channel,
                 dead: false,
                 options: []
             };
@@ -122,7 +123,7 @@ module.exports = (context, callback) => {
                     for (let i in b[bet_id].options) {
                         let option = b[bet_id].options[i];
                         for (let j in option.people) {
-                            if (option.people[j] == user) {
+                            if (option.people[j].id === user.id) {
                                 voted = true;
                                 break;
                             }
@@ -139,12 +140,19 @@ module.exports = (context, callback) => {
                             }
                             callback(null);
                         })
+                    } else {
+                        return message(
+                            botToken,
+                            dialog.channel.id,
+                            `You cannot submit twice <@${user.id}>`,
+                            callback
+                        );
                     }
                 });
             } else if (title === "bet_to_answer") {
                 let bet_id = dialog.actions[0].value;
                 console.log("bet_to_answer bet_id = ", bet_id);
-                lib.utils.kv.get({ key: 'bet_info' }, (err, b) => {
+                return lib.utils.kv.get({ key: 'bet_info' }, (err, b) => {
                     let a = [];
                     console.log("within get b");
                     console.log(b);
@@ -231,6 +239,21 @@ module.exports = (context, callback) => {
                         })
                     }
 
+                });
+            } else if (title === 'bet_to_poll') {
+                return lib.utils.kv.get({ key: 'bet_info' }, (err, b) => {
+                    let t = "";
+                    let bet_id = dialog.actions[0].value;
+                    let bet_info = b[bet_id];
+                    for (let i in bet_info.options) {
+                        let option = bet_info.options[i];
+                        t += `*${option.option_name}*: `;
+                        for (let j in option.people) {
+                            t += `_${option.people[j].name}_ `;
+                        }
+                        t += "\n";
+                    }
+                    return message(botToken, channel.id, t, callback);
                 });
             } else {
                 console.log("UNCAUGHT!!!!!! title is " + title);
