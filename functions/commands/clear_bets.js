@@ -25,6 +25,9 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
                 
             });
         }
+        lib.utils.storage.clear('num_bets', (err, value) => {
+                
+        });
     });
 
   callback(null, {
