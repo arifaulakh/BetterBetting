@@ -2,6 +2,11 @@ const lib = require('lib')({ token: process.env.STDLIB_TOKEN });
 
 const getBotToken = require('../helpers/get_bot_token.js');
 const message = require('../utils/message.js');
+
+const { WebClient } = require('@slack/client');
+const token = "xoxb-529492194598-527976070883-K2Doa2V6ARNqURsvnAol2O9F";
+
+const web = new WebClient(token);
 // const actions = require('./actions/__main__.js');
 // const respond_to_dialog = require('./dialog.js');
 /**
@@ -68,43 +73,43 @@ module.exports = (context, callback) => {
                     if (err) {
                         console.log("ERR AAAAA " + err);
                     }
+                    let a = [];
+                    for (let i in info_array) {
+                        a.push({
+                            name: "select_option",
+                            text: info_array[i],
+                            type: "button",
+                            value: JSON.stringify({
+                                "bet_id": num_bets,
+                                "option_index": i
+                            })
+                        });
+                    }
+                    message(
+                        botToken,
+                        dialog.channel.id,
+                        {
+                            text: submission.bet_name,
+                            attachments: [
+                                {
+                                    "text": "Choose one option",
+                                    "fallback": "You are unable to participate",
+                                    "callback_id": "wopr_game",
+                                    "color": "#3AA3E3",
+                                    "attachment_type": "default",
+                                    "actions": a
+                                }
+                            ]
+                        },
+                        callback
+                    );
                 });
-                let a = [];
-                for (let i in info_array) {
-                    a.push({
-                        name: "select_option",
-                        text: info_array[i],
-                        type: "button",
-                        value: JSON.stringify({
-                            "bet_id": num_bets,
-                            "option_index": i
-                        })
-                    });
-                }
-                message(
-                    botToken,
-                    dialog.channel.id,
-                    {
-                        text: submission.bet_name,
-                        attachments: [
-                            {
-                                "text": "Choose one option",
-                                "fallback": "You are unable to participate",
-                                "callback_id": "wopr_game",
-                                "color": "#3AA3E3",
-                                "attachment_type": "default",
-                                "actions": a
-                            }
-                        ]
-                    },
-                    callback
-                );
             });
         } else if (type === 'interactive_message') {
             var title = dialog.actions[0].name;
             if (title === "select_option") {
                 console.log("Selecting option");
-                lib.utils.kv.get({ key: 'bet_info' }, (err, b) => {
+                return lib.utils.kv.get({ key: 'bet_info' }, (err, b) => {
                     let val = JSON.parse(dialog.actions[0].value);
                     let bet_id = val.bet_id;
                     let option_id = val.option_index;
@@ -127,10 +132,12 @@ module.exports = (context, callback) => {
                         console.log("Updating b with user ", user.id, " and ", user.name, " from ", b, " to ");
                         b[bet_id].options[option_id].people.push(user);
                         console.log(b);
-                        lib.utils.kv.set({ key: 'bet_info', value: b }, (err) => {
+                        return lib.utils.kv.set({ key: 'bet_info', value: b }, (err) => {
                             if (err) {
                                 console.log("ERR BBBBBB " + err);
+                                return callback(err);
                             }
+                            callback(null);
                         })
                     }
                 });
@@ -192,14 +199,10 @@ module.exports = (context, callback) => {
                             }
                         }
                     }
-                    // const { WebClient } = require('@slack/client');
-                    // const token = process.env.SLACK_VERIFICATION_TOKEN;
 
-                    // const web = new WebClient(token);
-
-                    // let messages = winners.map(winner => {
-                    // return web.chat.postMessage({ channel: winner, text: 'Hello there' });
-                    // });
+                    let messages = winners.map(winner => {
+                        return web.chat.postMessage({ channel: winner, text: 'Hello there' });
+                    });
 
                     Promise.all(messages).then(results => {
 
