@@ -39,7 +39,7 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
                     ]
                 });
             } else {
-                if (!b[id].dead && b[id].owner.id === user) {
+                if (!b[id].dead && b[id].owner.id === user && b[id].channel.id === channel) {
                     a.push({
                         name: "bet_to_answer",
                         text: b[id].name,
