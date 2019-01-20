@@ -15,7 +15,7 @@ const openDialog = require('../../utils/open_dialog.js');
 * @param {string} text The text contents of the command
 * @param {object} command The full Slack command object
 * @param {string} botToken The bot token for the Slack bot you have activated
-* @returns {object}
+* @returns {any}
 */
 module.exports = (user, channel, text = 'Unknown Bet', command = {}, botToken = null, callback) => {
     getBotToken(command.team_id, (err, botToken) => {
@@ -51,63 +51,4 @@ module.exports = (user, channel, text = 'Unknown Bet', command = {}, botToken = 
             return callback(null, {});
         })
     });
-    /*
-        dialog({
-            trigger_id: command.trigger_id,
-            token: command.token,
-            channel: {
-                id: command.channel_id,
-                name: command.channel_name
-            },
-            user: {
-                id: command.user_id,
-                name: command.user_name
-            },
-            callback_id: "create_bet_dialog",
-            actions: [
-                {
-                    "name": "channels_list",
-                    "selected_options": [
-                        {
-                            "value": "C012AB3CD"
-                        }
-                    ]
-                }
-            ]
-        }, callback);
-        */
-    /*
-        callback(null, {
-            // text: `<@${user}> created a bet: ${text}`,
-
-            text: JSON.stringify(command),
-            // attachments: [
-            // You can customize your messages with attachments.
-            // See https://api.slack.com/docs/message-attachments for more info.
-            // ]
-            attachments: [
-                {
-                    "text": "Choose one option",
-                    "fallback": "You are unable to participate",
-                    "callback_id": "wopr_game",
-                    "color": "#3AA3E3",
-                    "attachment_type": "default",
-                    "actions": [
-                        {
-                            "name": "choose_option",
-                            "text": "A",
-                            "type": "button",
-                            "value": "1"
-                        },
-                        {
-                            "name": "add_option",
-                            "text": "Add option",
-                            "type": "button",
-                            "value": "1"
-                        }
-                    ]
-                }
-            ]
-        });
-        */
 };

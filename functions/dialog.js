@@ -7,7 +7,7 @@ const message = require('../utils/message.js');
 /**
  * Slack Dialog (Interactive Messages) Response Handler
  * @bg empty
- * @returns {object}
+ * @returns {any}
  */
 module.exports = (context, callback) => {
 
@@ -42,7 +42,7 @@ module.exports = (context, callback) => {
         console.log("TYPE is " + type);
         if (type == 'dialog_submission') {
             let info_array = JSON.parse(submission.bet_options);
-            console.log("on just recieved dialog submission bet_id is " + bet_id);
+            // console.log("on just recieved dialog submission bet_id is " + bet_id);
             console.log(" and info array is " + info_array);
             let bet_info = {
                 name: submission.bet_name,
@@ -55,11 +55,14 @@ module.exports = (context, callback) => {
                     people: []
                 });
             }
-            lib.utils.storage.get('bet_info', (err, b) => {
+            lib.utils.kv.get({ key: 'bet_info' }, (err, b) => {
                 if (!b) b = []
+                console.log("after getting bet_info we get b:");
+                console.log(b);
                 num_bets = b.length;
+                console.log("numbets = " + num_bets);
                 b.push(bet_info);
-                lib.utils.storage.set('bet_info', b, (err) => {
+                lib.utils.kv.set({ key: 'bet_info', value: b }, (err) => {
                     if (err) {
                         console.log("ERR AAAAA " + err);
                     }
@@ -98,7 +101,7 @@ module.exports = (context, callback) => {
         } else if (type === 'interactive_message') {
             var title = dialog.actions[0].name;
             if (title === "select_option") {
-                lib.utils.storage.get('bet_info', (err, b) => {
+                lib.utils.kv.get({ key: 'bet_info' }, (err, b) => {
                     let val = dialog.actions[0].value;
                     let bet_id = val.bet_id;
                     let option_id = val.option_index;
@@ -119,7 +122,7 @@ module.exports = (context, callback) => {
                         }
                         if (!flag) {
                             b[bet_id].options[option_id].people.push(user.id);
-                            lib.utils.storage.set('bet_info', b, (err) => {
+                            lib.utils.kv.set({ key: 'bet_info', value: b }, (err) => {
                                 if (err) {
                                     console.log("ERR BBBBBB " + err);
                                 }

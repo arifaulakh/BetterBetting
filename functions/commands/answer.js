@@ -16,7 +16,9 @@ const lib = require('lib')({ token: process.env.STDLIB_TOKEN });
 * @returns {object}
 */
 module.exports = (user, channel, text = '', command = {}, botToken = null, callback) => {
-    lib.utils.storage.get('bet_info', (err, b) => {
+    lib.utils.kv.get({ key: 'bet_info' }, (err, b) => {
+        console.log("In answer.js b:", b, " type = ", typeof (b));
+        if (!b) b = [];
         let a = [];
         function f(id) {
             console.log("f " + id);
