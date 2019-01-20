@@ -41,7 +41,7 @@ module.exports = (user, channel, text = 'Unknown Bet', command = {}, botToken = 
                     "type": "textarea",
                     "label": "Options",
                     "name": "bet_options",
-                    "hint": "Enter options in json format as array."
+                    "hint": "Enter each option on a new line"
                 }
             ]
         }, (err, result) => {
