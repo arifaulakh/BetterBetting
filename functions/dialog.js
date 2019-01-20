@@ -56,10 +56,9 @@ module.exports = (context, callback) => {
                 console.log("inside get in dialog.js bets_id = " + bet_id);
                 let num = bet_id + 1;
                 lib.utils.storage.set('num_bets', String(num), (err) => {
-                    console.log("ERROR on set num_bets " + " bet_id = " + bet_id + " err is " + err);
+                    if (err) console.log("ERROR on set num_bets " + " bet_id = " + bet_id + " err is " + err);
                 });
             });
-            lib.utils.storage.set('num_bets', bet_id + 1, (err) => {console.log(err); });
             let info_array = JSON.parse(submission.bet_options);
             console.log("on just recieved dialog submission bet_id is " + bet_id);
             console.log(" and info array is " + info_array);
@@ -116,50 +115,47 @@ module.exports = (context, callback) => {
             // Do whatever you want here
             if (type === 'interactive_message') {
                 var title = dialog.actions[0].name;
-                message(
-                    botToken,
-                    dialog.channel.id,
-                    'inbutton ' + JSON.stringify(title),
-                    callback
-                );
-                if (title==="select_option"){
-                  let flag = false;
-                  let voted = false;
-                  let val = dialog.actions[0].value;
-                  let bet_id = val.bet_id;
-                  let option_id = val.option_index;
-                  let bet_info;
-                  lib.utils.storage.get('bet_info' + String(bet_id),(err,val) => {
-                    bet_info = val;
-                  });
-                  for (let i in bet_info.options){
-                    let option = bet_info.options[i];
-                    for (let j in option.people){
-                      if (option.people[j]==user.id){
-                        voted = true;
-                        break;
-                      }
-                    }
-                  }
-                  if (!voted){
-                    for (let i in bet_info.options[option_id].people){
-                      if (bet_info.options[option_id].people[i]===user.id){flag = true;}
-                    }
-                    if (!flag){
-                      bet_info.options[option_d].people.push(user.id);
-                    }
-                  }
-            } else {
-                message(
-                    botToken,
-                    dialog.channel.id,
-                    'NOT DIALOG: ' + JSON.stringify(submission),
-                    callback
-                );
+                // message(
+                //     botToken,
+                //     dialog.channel.id,
+                //     'inbutton ' + JSON.stringify(title),
+                //     callback
+                // );
+                if (title === "select_option") {
+                    let val = dialog.actions[0].value;
+                    let bet_id = val.bet_id;
+                    let option_id = val.option_index;
+                    lib.utils.storage.get('bet_info' + String(bet_id), (err, bet_info) => {
+                        let flag = false;
+                        let voted = false;
+                        for (let i in bet_info.options) {
+                            let option = bet_info.options[i];
+                            for (let j in option.people) {
+                                if (option.people[j] == user.id) {
+                                    voted = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!voted) {
+                            for (let i in bet_info.options[option_id].people) {
+                                if (bet_info.options[option_id].people[i] === user.id) { flag = true; }
+                            }
+                            if (!flag) {
+                                bet_info.options[option_d].people.push(user.id);
+                            }
+                        }
+                    });
+                } else {
+                    message(
+                        botToken,
+                        dialog.channel.id,
+                        'NOT DIALOG: ' + JSON.stringify(submission),
+                        callback
+                    );
+                }
             }
+
         }
-
     });
-
-  };
-};
+}
