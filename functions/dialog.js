@@ -6,6 +6,7 @@ const message = require('../utils/message.js');
 const { WebClient } = require('@slack/client');
 
 const web = new WebClient(process.env.BOT_ACCESS_TOKEN);
+console.log(process.env.BOT_ACCESS_TOKEN);
 // const actions = require('./actions/__main__.js');
 // const respond_to_dialog = require('./dialog.js');
 /**
