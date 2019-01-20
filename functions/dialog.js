@@ -47,6 +47,7 @@ module.exports = (context, callback) => {
             let bet_info = {
                 name: submission.bet_name,
                 price: submission.bet_price,
+                owner: null,
                 options: []
             };
             for (let i in info_array) {
@@ -73,10 +74,10 @@ module.exports = (context, callback) => {
                         name: "select_option",
                         text: info_array[i],
                         type: "button",
-                        value: {
+                        value: JSON.stringify({
                             "bet_id": num_bets,
                             "option_index": i
-                        }
+                        })
                     });
                 }
                 message(
@@ -101,33 +102,35 @@ module.exports = (context, callback) => {
         } else if (type === 'interactive_message') {
             var title = dialog.actions[0].name;
             if (title === "select_option") {
+                console.log("Selecting option");
                 lib.utils.kv.get({ key: 'bet_info' }, (err, b) => {
-                    let val = dialog.actions[0].value;
+                    let val = JSON.parse(dialog.actions[0].value);
                     let bet_id = val.bet_id;
                     let option_id = val.option_index;
-                    let flag = false;
+                    console.log("dialog.actions");
+                    console.log(dialog.actions);
+                    console.log(dialog);
+                    console.log("selecting option val=", val, " b = ");
+                    console.log(b);
                     let voted = false;
                     for (let i in b[bet_id].options) {
                         let option = b[bet_id].options[i];
                         for (let j in option.people) {
-                            if (option.people[j] == user.id) {
+                            if (option.people[j] == user) {
                                 voted = true;
                                 break;
                             }
                         }
                     }
                     if (!voted) {
-                        for (let i in b[bet_id].options[option_id].people) {
-                            if (b[bet_id].options[option_id].people[i] === user.id) { flag = true; }
-                        }
-                        if (!flag) {
-                            b[bet_id].options[option_id].people.push(user.id);
-                            lib.utils.kv.set({ key: 'bet_info', value: b }, (err) => {
-                                if (err) {
-                                    console.log("ERR BBBBBB " + err);
-                                }
-                            })
-                        }
+                        console.log("Updating b with user ", user.id, " and ", user.name, " from ", b, " to ");
+                        b[bet_id].options[option_id].people.push(user);
+                        console.log(b);
+                        lib.utils.kv.set({ key: 'bet_info', value: b }, (err) => {
+                            if (err) {
+                                console.log("ERR BBBBBB " + err);
+                            }
+                        })
                     }
                 });
             }
