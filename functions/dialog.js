@@ -154,6 +154,7 @@ module.exports = (context, callback) => {
                             })
                         });
                     }
+                    console.log("A is ", a);
                     message(
                         botToken,
                         dialog.channel.id,
@@ -192,20 +193,22 @@ module.exports = (context, callback) => {
                         }
                     }
                     let messages = winners.map(winner => {
-                      return web.chat.postMessage({ channel: winner, text: 'Hello there' });
+                        return web.chat.postMessage({ channel: winner, text: 'Hello there' });
                     });
 
                     Promise.all(messages).then(results => {
-                      console.log("winners:");
-                      for (let i in winners) console.log(winners[i]);
-                      console.log("losers:");
-                      for (let i in losers) console.log(losers[i]);
-                      b[bet_id].dead = true;
-                      lib.utils.kv.set({ key: 'bet_info', value: b }, (err) => {
+                        console.log("winners:");
+                        for (let i in winners) console.log(winners[i]);
+                        console.log("losers:");
+                        for (let i in losers) console.log(losers[i]);
+                        b[bet_id].dead = true;
+                        lib.utils.kv.set({ key: 'bet_info', value: b }, (err) => {
 
-                      });
+                        });
                     })
                 });
+            } else {
+                console.log("UNCAUGHT!!!!!! title is " + title);
             }
         }
     });
