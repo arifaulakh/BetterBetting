@@ -244,14 +244,14 @@ module.exports = (context, callback) => {
                         let p = b[bet_id].price;
                         let winner_earnings = 1.0 * p * losers.length / (1.0 * winners.length);
                         let loser_amount = p / winners.length;
-                        let t1 = 'Congratulations, you won $' + String(winner_earnings) + '! Expect $' + loser_amount + ' each from: ';
+                        let t1 = 'Congratulations, you won $' + String(winner_earnings) + ` from the bet ${b[bet_id].name}!` + ' Expect $' + loser_amount + ' each from: ';
                         for (let k in losers) {
                             t1 += `<@${losers[k]}> `;
                         }
                         let messages = winners.map(winner => {
                             return web.chat.postMessage({ channel: winner, text: t1 });
                         });
-                        let t = "You owe $" + String(loser_amount) + " each to: ";
+                        let t = "You owe $" + String(loser_amount) + ` from the bet ${b[bet_id].name} each to: `;
                         for (let k in winners) {
                             t += `<@${winners[k]}> `;
                         }
