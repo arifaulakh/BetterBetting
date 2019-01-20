@@ -26,10 +26,10 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
                 console.log("After answer a is:");
                 console.log(a);
                 callback(null, {
-                    text: `List of events`,
+                    text: `List of bets you started`,
                     attachments: [
                         {
-                            "text": "Choose one option",
+                            "text": "Choose a bet",
                             "fallback": "You are unable to participate",
                             "callback_id": "answer_1",
                             "color": "#3AA3E3",
