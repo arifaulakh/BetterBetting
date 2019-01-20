@@ -293,8 +293,9 @@ module.exports = (context, callback) => {
                                 });
                             })
                         })
+                    } else {
+                        return message(botToken, channel.id, 'Nobody owes anybody else any money', callback);
                     }
-
                 });
             } else if (title === 'bet_to_poll') {
                 return lib.utils.kv.get({ key: 'bet_info' }, (err, b) => {
