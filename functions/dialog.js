@@ -4,9 +4,8 @@ const getBotToken = require('../helpers/get_bot_token.js');
 const message = require('../utils/message.js');
 
 const { WebClient } = require('@slack/client');
-const token = "xoxb-529492194598-527976070883-K2Doa2V6ARNqURsvnAol2O9F";
 
-const web = new WebClient(token);
+const web = new WebClient(process.env.BOT_ACCESS_TOKEN);
 // const actions = require('./actions/__main__.js');
 // const respond_to_dialog = require('./dialog.js');
 /**
