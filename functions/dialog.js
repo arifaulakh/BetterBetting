@@ -306,7 +306,7 @@ module.exports = (context, callback) => {
                         let option = bet_info.options[i];
                         t += `*${option.option_name}*: `;
                         for (let j in option.people) {
-                            t += `_${option.people[j].name}_ `;
+                            t += `<@${option.people[j].id}> `;
                         }
                         t += "\n";
                     }
