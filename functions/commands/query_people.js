@@ -1,4 +1,4 @@
-const lib = require('lib')({token: process.env.STDLIB_TOKEN});
+const lib = require('lib')({ token: process.env.STDLIB_TOKEN });
 /**
 * /query_people
 *
@@ -16,25 +16,22 @@ const lib = require('lib')({token: process.env.STDLIB_TOKEN});
 * @returns {object}
 */
 module.exports = (user, channel, text = '', command = {}, botToken = null, callback) => {
-  let t;
+  let t = "";
   let bet_id = parseInt(text);
   let bet_info;
-  lib.utils.storage.get('bet_info' + String(bet_id),(err,val) => {
+  lib.utils.storage.get('bet_info' + String(bet_id), (err, val) => {
     bet_info = val;
   });
-  for (let i in bet_info.options){
+  for (let i in bet_info.options) {
     let option = bet_info.options[i];
-    t+=(option+"**");
-    for (let j in option.people){
-      t+=(option.people[j]+"**");
+    t += (option + "**");
+    for (let j in option.people) {
+      t += (option.people[j] + "**");
     }
-    t+="  ";
+    t += "  ";
   }
   callback(null, {
     text: `These are the options and the people who voted for them ${t}`,
-    attachments: [
-      // You can customize your messages with attachments.
-      // See https://api.slack.com/docs/message-attachments for more info.
-    ]
+    attachments: []
   });
 };
