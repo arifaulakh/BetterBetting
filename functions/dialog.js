@@ -46,7 +46,9 @@ module.exports = (context, callback) => {
         }
         console.log("TYPE is " + type);
         if (type == 'dialog_submission') {
-            let info_array = JSON.parse(submission.bet_options);
+            // let info_array = JSON.parse(submission.bet_options);
+            let info_array = submission.bet_options.split('\n');
+            // console.log("info_array:", info_array);
             // console.log("on just recieved dialog submission bet_id is " + bet_id);
             console.log(" and info array is " + info_array);
             let bet_info = {
