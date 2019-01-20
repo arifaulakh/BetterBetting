@@ -142,8 +142,8 @@ module.exports = (context, callback) => {
                     }
                   }
                   if (!voted){
-                    for (let i in bet_info.options[option_id].people{
-                      if (bet_info.options[option_id].people[i]===user.id)flag = true;
+                    for (let i in bet_info.options[option_id].people){
+                      if (bet_info.options[option_id].people[i]===user.id){flag = true;}
                     }
                     if (!flag){
                       bet_info.options[option_d].people.push(user.id);
@@ -161,4 +161,5 @@ module.exports = (context, callback) => {
 
     });
 
+  };
 };
