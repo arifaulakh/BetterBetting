@@ -192,18 +192,24 @@ module.exports = (context, callback) => {
                             }
                         }
                     }
+                    const { WebClient } = require('@slack/client');
+                    const token = process.env.SLACK_VERIFICATION_TOKEN;
+
+                    const web = new WebClient(token);
+
                     let messages = winners.map(winner => {
                         return web.chat.postMessage({ channel: winner, text: 'Hello there' });
                     });
 
                     Promise.all(messages).then(results => {
+
                         console.log("winners:");
                         for (let i in winners) console.log(winners[i]);
                         console.log("losers:");
                         for (let i in losers) console.log(losers[i]);
                         b[bet_id].dead = true;
                         lib.utils.kv.set({ key: 'bet_info', value: b }, (err) => {
-
+                            callback(err, "success")
                         });
                     })
                 });
