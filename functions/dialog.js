@@ -14,11 +14,6 @@ module.exports = (context, callback) => {
     let params = context.params;
     let dialog;
 
-    // if (params.payload.type !== 'dialog_submission') {
-    //     actions(context, callback);
-    //     return;
-    // }
-
     if (params.payload) {
         try {
             dialog = JSON.parse(params.payload);
@@ -46,19 +41,6 @@ module.exports = (context, callback) => {
         }
         console.log("TYPE is " + type);
         if (type == 'dialog_submission') {
-            // Do whatever you want here
-
-            let bet_id;
-            lib.utils.storage.get('num_bets', (err, val) => {
-                if (isNaN(val)) bet_id = 0;
-                else bet_id = parseInt(val);
-                console.log("val = " + val + " typeof = " + typeof (val));
-                console.log("inside get in dialog.js bets_id = " + bet_id);
-                let num = bet_id + 1;
-                lib.utils.storage.set('num_bets', String(num), (err) => {
-                    if (err) console.log("ERROR on set num_bets " + " bet_id = " + bet_id + " err is " + err);
-                });
-            });
             let info_array = JSON.parse(submission.bet_options);
             console.log("on just recieved dialog submission bet_id is " + bet_id);
             console.log(" and info array is " + info_array);
@@ -67,95 +49,85 @@ module.exports = (context, callback) => {
                 price: submission.bet_price,
                 options: []
             };
-            let a = [];
             for (let i in info_array) {
                 bet_info.options.push({
                     option_name: info_array[i],
                     people: []
                 });
-                a.push({
-                    name: "select_option",
-                    text: info_array[i],
-                    type: "button",
-                    value: {
-                        "bet_id": bet_id,
-                        "option_index": i
+            }
+            lib.utils.storage.get('bet_info', (err, b) => {
+                if (!b) b = []
+                num_bets = b.length;
+                b.push(bet_info);
+                lib.utils.storage.set('bet_info', b, (err) => {
+                    if (err) {
+                        console.log("ERR AAAAA " + err);
                     }
                 });
-            }
-            console.log(bet_info);
-            lib.utils.storage.set('bet_info' + String(bet_id), bet_info, (err) => { });
-            let msgobject = {
-                text: submission.bet_name,
-                attachments: [
+                let a = [];
+                for (let i in info_array) {
+                    a.push({
+                        name: "select_option",
+                        text: info_array[i],
+                        type: "button",
+                        value: {
+                            "bet_id": num_bets,
+                            "option_index": i
+                        }
+                    });
+                }
+                message(
+                    botToken,
+                    dialog.channel.id,
                     {
-                        "text": "Choose one option",
-                        "fallback": "You are unable to participate",
-                        "callback_id": "wopr_game",
-                        "color": "#3AA3E3",
-                        "attachment_type": "default",
-                        "actions": a
-                    }
-                ]
-            };
-            // msgobject.attachments[0].actions.push({
-            //     "name": "newone",
-            //     "text": "its new wow",
-            //     "type": "button",
-            //     "value": `yeinew`
-            // });
-            message(
-                botToken,
-                dialog.channel.id,
-                //'DIALOG: ' + JSON.stringify(submission),
-                msgobject,
-                callback
-            );
-        } else {
-            // Do whatever you want here
-            if (type === 'interactive_message') {
-                var title = dialog.actions[0].name;
-                // message(
-                //     botToken,
-                //     dialog.channel.id,
-                //     'inbutton ' + JSON.stringify(title),
-                //     callback
-                // );
-                if (title === "select_option") {
+                        text: submission.bet_name,
+                        attachments: [
+                            {
+                                "text": "Choose one option",
+                                "fallback": "You are unable to participate",
+                                "callback_id": "wopr_game",
+                                "color": "#3AA3E3",
+                                "attachment_type": "default",
+                                "actions": a
+                            }
+                        ]
+                    },
+                    callback
+                );
+            });
+        } else if (type === 'interactive_message') {
+            var title = dialog.actions[0].name;
+            if (title === "select_option") {
+                lib.utils.storage.get('bet_info', (err, b) => {
                     let val = dialog.actions[0].value;
                     let bet_id = val.bet_id;
                     let option_id = val.option_index;
-                    lib.utils.storage.get('bet_info' + String(bet_id), (err, bet_info) => {
-                        let flag = false;
-                        let voted = false;
-                        for (let i in bet_info.options) {
-                            let option = bet_info.options[i];
-                            for (let j in option.people) {
-                                if (option.people[j] == user.id) {
-                                    voted = true;
-                                    break;
+                    let flag = false;
+                    let voted = false;
+                    for (let i in b[bet_id].options) {
+                        let option = b[bet_id].options[i];
+                        for (let j in option.people) {
+                            if (option.people[j] == user.id) {
+                                voted = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!voted) {
+                        for (let i in b[bet_id].options[option_id].people) {
+                            if (b[bet_id].options[option_id].people[i] === user.id) { flag = true; }
+                        }
+                        if (!flag) {
+                            b[bet_id].options[option_id].people.push(user.id);
+                            lib.utils.storage.set('bet_info', b, (err) => {
+                                if (err) {
+                                    console.log("ERR BBBBBB " + err);
                                 }
-                            }
+                            })
                         }
-                        if (!voted) {
-                            for (let i in bet_info.options[option_id].people) {
-                                if (bet_info.options[option_id].people[i] === user.id) { flag = true; }
-                            }
-                            if (!flag) {
-                                bet_info.options[option_d].people.push(user.id);
-                            }
-                        }
-                    });
-                } else {
-                    message(
-                        botToken,
-                        dialog.channel.id,
-                        'NOT DIALOG: ' + JSON.stringify(submission),
-                        callback
-                    );
-                }
+                    }
+                });
             }
-
         }
     });
 }
