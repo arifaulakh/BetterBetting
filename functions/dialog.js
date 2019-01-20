@@ -189,32 +189,48 @@ module.exports = (context, callback) => {
                     let bet_id = val.bet_id;
                     let option_id = val.option_id;
                     let winners = [], losers = [];
+                    let winner_names = [];
                     for (let i in b[bet_id].options) {
                         for (let j in b[bet_id].options[i].people) {
                             let u = b[bet_id].options[i].people[j];
                             if (i === option_id) {
                                 winners.push(u.id);
+                                winner_names.push(u.name);
                             } else {
                                 losers.push(u.id);
                             }
                         }
                     }
-
-                    let messages = winners.map(winner => {
-                        return web.chat.postMessage({ channel: winner, text: 'Hello there' });
-                    });
-
-                    Promise.all(messages).then(results => {
-
-                        console.log("winners:");
-                        for (let i in winners) console.log(winners[i]);
-                        console.log("losers:");
-                        for (let i in losers) console.log(losers[i]);
-                        b[bet_id].dead = true;
-                        lib.utils.kv.set({ key: 'bet_info', value: b }, (err) => {
-                            callback(err, "success")
+                    if (losers.length > 0 && winners.length > 0) {
+                        let p = b[bet_id].price;
+                        let winner_earnings = 1.0 * p * losers.length / (1.0 * winners.length);
+                        let loser_amount = p / winners.length;
+                        let messages = winners.map(winner => {
+                            return web.chat.postMessage({ channel: winner, text: 'Congratulations, you won ' + String(winner_earnings) + '!' });
                         });
-                    })
+                        let t = "You owe $" + String(loser_amount) + " each to ";
+                        for (let k in winner_names) {
+                            t += "@";
+                            t += winner_names[k];
+                            t += " ";
+                        }
+                        let messages2 = losers.map(loser => {
+                            return web.chat.postMessage({ channel: loser, text: t });
+                        });
+                        Promise.all(messages).then(results => {
+                            Promise.all(messages2).then(res => {
+                                console.log("winners:");
+                                for (let i in winners) console.log(winners[i]);
+                                console.log("losers:");
+                                for (let i in losers) console.log(losers[i]);
+                                b[bet_id].dead = true;
+                                lib.utils.kv.set({ key: 'bet_info', value: b }, (err) => {
+                                    callback(err, "success")
+                                });
+                            })
+                        })
+                    }
+
                 });
             } else {
                 console.log("UNCAUGHT!!!!!! title is " + title);
