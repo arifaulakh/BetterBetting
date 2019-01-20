@@ -26,7 +26,7 @@ module.exports = (user, channel, text = '', command = {}, botToken = null, callb
                 console.log("After answer a is:");
                 console.log(a);
                 callback(null, {
-                    text: `List of events`,
+                    text: `List of bets`,
                     attachments: [
                         {
                             "text": "Choose one option",

@@ -63,14 +63,14 @@ module.exports = (context, callback) => {
                     people: []
                 });
             }
-            lib.utils.kv.get({ key: 'bet_info' }, (err, b) => {
+            return lib.utils.kv.get({ key: 'bet_info' }, (err, b) => {
                 if (!b) b = []
                 console.log("after getting bet_info we get b:");
                 console.log(b);
                 num_bets = b.length;
                 console.log("numbets = " + num_bets);
                 b.push(bet_info);
-                lib.utils.kv.set({ key: 'bet_info', value: b }, (err) => {
+                return lib.utils.kv.set({ key: 'bet_info', value: b }, (err) => {
                     if (err) {
                         console.log("ERR AAAAA " + err);
                     }
@@ -85,13 +85,6 @@ module.exports = (context, callback) => {
                                 "option_index": i
                             })
                         });
-                        // a.push({
-                        //     "text": info_array[i],
-                        //     "value": JSON.stringify({
-                        //         "bet_id": num_bets,
-                        //         "option_index": i
-                        //     })
-                        // });
                     }
                     let x = [];
                     for (let i = 0; i < a.length;) {
@@ -113,30 +106,12 @@ module.exports = (context, callback) => {
                         i = j;
                     }
 
-                    message(
+                    return message(
                         botToken,
                         dialog.channel.id,
                         {
                             text: submission.bet_name,
                             attachments: x
-                            // attachments: [
-                            //     {
-                            //         "text": "Choose one option",
-                            //         "fallback": "You are unable to participate",
-                            //         "callback_id": "wopr_game",
-                            //         "color": "#3AA3E3",
-                            //         "attachment_type": "default",
-                            //         "actions": x
-                            // "actions": [
-                            //     {
-                            //         name: "select_option",
-                            //         text: "Place your bet",
-                            //         type: "select",
-                            //         options: a
-                            //     }
-                            // ]
-                            // }
-                            // ]
                         },
                         callback
                     );
@@ -311,6 +286,53 @@ module.exports = (context, callback) => {
                         t += "\n";
                     }
                     return message(botToken, channel.id, t, callback);
+                });
+            } else if (title === 'resend') {
+                return lib.utils.kv.get({ key: 'bet_info' }, (err, b) => {
+                    let t = "";
+                    let bet_id = dialog.actions[0].value;
+                    let bet_info = b[bet_id];
+                    let a = [];
+                    for (let i in bet_info.options) {
+                        let option = bet_info.options[i];
+                        a.push({
+                            name: "select_option",
+                            text: option.option_name,
+                            type: "button",
+                            value: JSON.stringify({
+                                "bet_id": bet_id,
+                                "option_index": i
+                            })
+                        })
+                    }
+                    let x = [];
+                    for (let i = 0; i < a.length;) {
+                        let c = [];
+                        let j = i;
+                        console.log("c:");
+                        while (j < a.length && j < i + 5) {
+                            c.push(a[j])
+                            console.log(a[j]);
+                            ++j;
+                        }
+                        x.push({
+                            "fallback": "You are unable to participate",
+                            "callback_id": "wopr_game",
+                            "color": "#3AA3E3",
+                            "attachment_type": "default",
+                            "actions": c
+                        })
+                        i = j;
+                    }
+                    return message(
+                        botToken,
+                        dialog.channel.id,
+                        {
+                            text: b[bet_id].name,
+                            attachments: x
+                        },
+                        callback
+                    );
                 });
             } else {
                 console.log("UNCAUGHT!!!!!! title is " + title);
