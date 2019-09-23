@@ -1,3 +1,3 @@
 ## BetterBetting Slack Bot
 
-https://devpost.com/software/betterbettingbot
+Project can be viewed: https://devpost.com/software/betterbettingbot
